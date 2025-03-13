@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-dotenv.config({ path: "../../.env" });
+dotenv.config();
 
 export const xConfig = {
   clientId: process.env.X_CLIENT_ID || "MISSING_CLIENT_ID",

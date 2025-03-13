@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.xConfig = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config({ path: "../../.env" });
+dotenv_1.default.config();
 exports.xConfig = {
     clientId: process.env.X_CLIENT_ID || "MISSING_CLIENT_ID",
     clientSecret: process.env.X_CLIENT_SECRET,
