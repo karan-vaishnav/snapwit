@@ -17,25 +17,41 @@ const puppeteer_1 = __importDefault(require("puppeteer"));
 function twitterScrapper(username_1) {
     return __awaiter(this, arguments, void 0, function* (username, count = 5) {
         const browser = yield puppeteer_1.default.launch({
-            executablePath: "/usr/bin/chromium-browser", // Use system Chromium
+            executablePath: "/snap/bin/chromium",
             headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"], // WSL compatibility
+            args: [
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--single-process",
+            ],
         });
         const page = yield browser.newPage();
         try {
             console.log(`Scraping tweets for @${username}`);
-            yield page.goto(`https://x.com/${username}`, { waitUntil: "networkidle2" });
+            yield page.goto(`https://x.com/${username}`, {
+                waitUntil: "networkidle2",
+                timeout: 60000,
+            });
             console.log("Page loaded");
-            const tweets = yield page.$$eval('[data-testid="tweetText"]', (elements, numTweets) => {
+            yield new Promise((resolve) => setTimeout(resolve, 5000)); // 5s for JS to render
+            console.log("Waited for render");
+            const tweets = yield page
+                .$$eval("article div[lang]", // Fallback selector
+            (elements, numTweets) => {
                 console.log(`Found ${elements.length} tweet elements`);
                 return elements.map((el) => el.textContent || "").slice(0, numTweets);
-            }, count);
-            console.log(`Scraped tweets: ${tweets}`);
-            return tweets;
+            }, count)
+                .catch((err) => {
+                console.error("$$eval failed:", err);
+                return [];
+            });
+            console.log(`Scraped tweets: ${JSON.stringify(tweets)}`);
+            return tweets.length ? tweets : ["No recent tweets found"];
         }
         catch (error) {
             console.error(`Failed to scrape @${username}:`, error);
-            throw error; // Re-throw to catch in route
+            throw error;
         }
         finally {
             yield browser.close();
