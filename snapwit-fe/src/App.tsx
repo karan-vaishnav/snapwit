@@ -17,7 +17,7 @@ const App: React.FC = () => {
     setSuggestions([]);
     try {
       const response = await axios.post(
-        "http://localhost:5000/comments/suggest",
+        "https://snapwit-production.up.railway.app/comments/suggest",
         {
           tweetUrl,
           regen,
