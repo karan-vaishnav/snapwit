@@ -4,11 +4,11 @@ export async function twitterScraper(tweetUrl: string): Promise<string> {
   let browser;
   try {
     browser = await puppeteer.launch({
-      executablePath:
-        process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium-browser",
+      // executablePath:
+      //   process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium-browser",
       headless: true,
       args: [
-        "--no-sandbox",
+        // "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
         "--single-process",
