@@ -6,9 +6,9 @@ export async function twitterScraper(tweetUrl: string): Promise<string> {
     browser = await puppeteer.launch({
       // executablePath:
       //   process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium-browser",
-      headless: true,
+      headless: "shell",
       args: [
-        // "--no-sandbox",
+        "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
         "--single-process",
@@ -32,5 +32,7 @@ export async function twitterScraper(tweetUrl: string): Promise<string> {
   } catch (error) {
     console.error("Error scraping tweet:", error);
     return "Error retrieving tweet content.";
+  } finally {
+    if (browser) await browser.close();
   }
 }
