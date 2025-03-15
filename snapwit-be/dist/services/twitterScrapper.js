@@ -34,11 +34,10 @@ function twitterScrapper(username_1) {
                 timeout: 60000,
             });
             console.log("Page loaded");
-            yield new Promise((resolve) => setTimeout(resolve, 5000)); // 5s for JS to render
+            yield new Promise((resolve) => setTimeout(resolve, 5000));
             console.log("Waited for render");
             const tweets = yield page
-                .$$eval("article div[lang]", // Fallback selector
-            (elements, numTweets) => {
+                .$$eval("article div[lang]", (elements, numTweets) => {
                 console.log(`Found ${elements.length} tweet elements`);
                 return elements.map((el) => el.textContent || "").slice(0, numTweets);
             }, count)

@@ -11,6 +11,10 @@ const commentRoute_1 = __importDefault(require("./routes/commentRoute"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+app.use((req, res, next) => {
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    next();
+});
 app.use("/auth", authRoute_1.default);
 app.use("/comments", commentRoute_1.default);
 app.listen(xConfig_1.xConfig.port, () => {

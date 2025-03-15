@@ -29,6 +29,7 @@ router.post("/suggest", (req, res) => __awaiter(void 0, void 0, void 0, function
             `Hey ${handle}, ${tweet}—echoing your genius from "${recentTweets[1] || "earlier"}"!`,
             `${handle}, ${tweet} hits hard—keep dropping truth like "${recentTweets[2] || "always"}"!`,
         ];
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.json({ suggestions });
     }
     catch (error) {

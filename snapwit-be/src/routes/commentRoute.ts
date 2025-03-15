@@ -27,6 +27,7 @@ router.post("/suggest", async (req: Request, res: Response) => {
       }"!`,
     ];
 
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.json({ suggestions });
   } catch (error) {
     console.error("Suggestion error:", error);

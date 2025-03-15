@@ -24,12 +24,12 @@ export async function twitterScrapper(
     });
     console.log("Page loaded");
 
-    await new Promise((resolve) => setTimeout(resolve, 5000)); // 5s for JS to render
+    await new Promise((resolve) => setTimeout(resolve, 5000)); 
     console.log("Waited for render");
 
     const tweets = await page
       .$$eval(
-        "article div[lang]", // Fallback selector
+        "article div[lang]", 
         (elements, numTweets) => {
           console.log(`Found ${elements.length} tweet elements`);
           return elements.map((el) => el.textContent || "").slice(0, numTweets);
