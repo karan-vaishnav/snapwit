@@ -23,7 +23,6 @@ const App: React.FC = () => {
           regen,
         }
       );
-      console.log("Backend response:", response.data);
       setSuggestions(response.data.aiComments || []);
     } catch (err: any) {
       setError(err.response?.data?.error || "Something went wrong!");
