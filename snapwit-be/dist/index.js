@@ -12,12 +12,11 @@ const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
-    origin: "http://127.0.0.1:5173",
+    origin: ["http://127.0.0.1:5173", "https://snapwit.vercel.app"],
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
 }));
 const PORT = process.env.PORT || 5000;
-// Centralized Session Middleware (Used for authentication)
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || "fallback-secret",
     resave: false,

@@ -1,1 +1,1 @@
-{"root":["./@types/express-session/index.d.ts","./src/index.ts","./src/config/xConfig.ts","./src/routes/authRoute.ts","./src/routes/fetchRoutes.ts","./src/services/aiComment.ts","./src/services/twitterScrapper.ts"],"version":"5.7.3"}
+{"root":["./@types/express-session/index.d.ts","./src/index.ts","./src/config/xConfig.ts","./src/routes/authRoute.ts","./src/routes/fetchRoutes.ts","./src/services/aiComment.ts","./src/services/twitterScrapper.ts"],"version":"5.8.2"}
