@@ -8,4 +8,4 @@ cmds = ["npm install", "npm run build"]
 cmd = "npm start"
 
 [variables]
-PUPPETEER_EXECUTABLE_PATH = "/usr/bin/chromium-browser"
+PUPPETEER_EXECUTABLE_PATH = "/usr/bin/chromium"
