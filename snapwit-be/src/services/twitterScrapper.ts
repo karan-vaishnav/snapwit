@@ -1,18 +1,14 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "chrome-aws-lambda";
 
 export async function twitterScraper(tweetUrl: string): Promise<string> {
   let browser;
   try {
     browser = await puppeteer.launch({
-      // executablePath:
-      //   process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium-browser",
-      headless: "shell",
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--single-process",
-      ],
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
     });
 
     const page = await browser.newPage();

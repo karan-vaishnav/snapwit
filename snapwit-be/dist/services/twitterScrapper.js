@@ -13,20 +13,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.twitterScraper = twitterScraper;
-const puppeteer_1 = __importDefault(require("puppeteer"));
+const puppeteer_core_1 = __importDefault(require("puppeteer-core"));
+const chrome_aws_lambda_1 = __importDefault(require("chrome-aws-lambda"));
 function twitterScraper(tweetUrl) {
     return __awaiter(this, void 0, void 0, function* () {
         let browser;
         try {
-            browser = yield puppeteer_1.default.launch({
-                executablePath: "/usr/bin/chromium-browser",
-                headless: true,
-                args: [
-                    "--no-sandbox",
-                    "--disable-setuid-sandbox",
-                    "--disable-dev-shm-usage",
-                    "--single-process",
-                ],
+            browser = yield puppeteer_core_1.default.launch({
+                args: chrome_aws_lambda_1.default.args,
+                defaultViewport: chrome_aws_lambda_1.default.defaultViewport,
+                executablePath: yield chrome_aws_lambda_1.default.executablePath,
+                headless: chrome_aws_lambda_1.default.headless,
             });
             const page = yield browser.newPage();
             yield page.goto(tweetUrl, { waitUntil: "networkidle2", timeout: 60000 });
@@ -42,6 +39,10 @@ function twitterScraper(tweetUrl) {
         catch (error) {
             console.error("Error scraping tweet:", error);
             return "Error retrieving tweet content.";
+        }
+        finally {
+            if (browser)
+                yield browser.close();
         }
     });
 }
