@@ -1,5 +1,6 @@
 [phases.setup]
 nixPkgs = ["chromium", "nodejs-18_x"]
+cmds = ["ln -sf $(which chromium) /usr/bin/chromium"]
 
 [phases.build]
 cmds = ["npm install", "npm run build"]

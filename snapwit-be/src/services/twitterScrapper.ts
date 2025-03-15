@@ -1,10 +1,11 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 
 export async function twitterScraper(tweetUrl: string): Promise<string> {
   let browser;
   try {
     browser = await puppeteer.launch({
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium",
+      executablePath:
+        process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium",
       headless: "shell",
       args: [
         "--no-sandbox",
