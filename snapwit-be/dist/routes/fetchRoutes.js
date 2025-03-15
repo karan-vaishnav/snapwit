@@ -14,29 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const twitterScrapper_1 = require("../services/twitterScrapper");
+const aiComment_1 = require("../services/aiComment");
 const router = express_1.default.Router();
-router.post("/suggest", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { tweet, handle } = req.body;
-    if (!tweet || !handle) {
-        res.status(400).json({ error: "Missing tweet or handle" });
-        return;
-    }
+router.post("/comments/suggest", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const username = handle.startsWith("@") ? handle.slice(1) : handle;
-        const recentTweets = yield (0, twitterScrapper_1.twitterScrapper)(username, 5);
-        const suggestions = [
-            `${handle}, ${tweet}? With vibes like "${recentTweets[0] || "this"}", you’re unstoppable!`,
-            `Hey ${handle}, ${tweet}—echoing your genius from "${recentTweets[1] || "earlier"}"!`,
-            `${handle}, ${tweet} hits hard—keep dropping truth like "${recentTweets[2] || "always"}"!`,
-        ];
-        res.setHeader("Content-Type", "application/json; charset=utf-8");
-        res.json({ suggestions });
+        const { tweetUrl } = req.body;
+        if (!tweetUrl) {
+            res.status(400).json({ error: "Tweet URL is required" });
+            return;
+        }
+        const tweet = yield (0, twitterScrapper_1.twitterScraper)(tweetUrl);
+        const aiComments = yield (0, aiComment_1.generateAIComment)({ tweet });
+        res.json({ aiComments });
     }
     catch (error) {
-        console.error("Suggestion error:", error);
-        res
-            .status(500)
-            .json({ error: "Failed to generate suggestions", details: error });
+        console.error("Error generating AI comment:", error);
+        res.status(500).json({ error: "Failed to generate AI comment" });
     }
 }));
 exports.default = router;

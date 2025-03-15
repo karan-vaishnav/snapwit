@@ -12,48 +12,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.twitterScrapper = twitterScrapper;
+exports.twitterScraper = twitterScraper;
 const puppeteer_1 = __importDefault(require("puppeteer"));
-function twitterScrapper(username_1) {
-    return __awaiter(this, arguments, void 0, function* (username, count = 5) {
-        const browser = yield puppeteer_1.default.launch({
-            executablePath: "/snap/bin/chromium",
-            headless: true,
-            args: [
-                "--no-sandbox",
-                "--disable-setuid-sandbox",
-                "--disable-dev-shm-usage",
-                "--single-process",
-            ],
-        });
-        const page = yield browser.newPage();
+function twitterScraper(tweetUrl) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let browser;
         try {
-            console.log(`Scraping tweets for @${username}`);
-            yield page.goto(`https://x.com/${username}`, {
-                waitUntil: "networkidle2",
-                timeout: 60000,
+            browser = yield puppeteer_1.default.launch({
+                executablePath: "/usr/bin/chromium-browser",
+                headless: true,
+                args: [
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--single-process",
+                ],
             });
-            console.log("Page loaded");
-            yield new Promise((resolve) => setTimeout(resolve, 5000));
-            console.log("Waited for render");
-            const tweets = yield page
-                .$$eval("article div[lang]", (elements, numTweets) => {
-                console.log(`Found ${elements.length} tweet elements`);
-                return elements.map((el) => el.textContent || "").slice(0, numTweets);
-            }, count)
-                .catch((err) => {
-                console.error("$$eval failed:", err);
-                return [];
-            });
-            console.log(`Scraped tweets: ${JSON.stringify(tweets)}`);
-            return tweets.length ? tweets : ["No recent tweets found"];
+            const page = yield browser.newPage();
+            yield page.goto(tweetUrl, { waitUntil: "networkidle2", timeout: 60000 });
+            const tweetText = yield page
+                .$eval("article div[lang]", (el) => { var _a; return ((_a = el.textContent) === null || _a === void 0 ? void 0 : _a.trim()) || ""; })
+                .catch(() => "");
+            yield browser.close();
+            if (!tweetText) {
+                throw new Error("Tweet content not found.");
+            }
+            return tweetText;
         }
         catch (error) {
-            console.error(`Failed to scrape @${username}:`, error);
-            throw error;
-        }
-        finally {
-            yield browser.close();
+            console.error("Error scraping tweet:", error);
+            return "Error retrieving tweet content.";
         }
     });
 }

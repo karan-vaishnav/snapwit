@@ -14,34 +14,55 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const twitter_api_v2_1 = require("twitter-api-v2");
+const express_session_1 = __importDefault(require("express-session"));
 const xConfig_1 = require("../config/xConfig");
 const router = express_1.default.Router();
-const xClient = new twitter_api_v2_1.TwitterApi({ clientId: xConfig_1.xConfig.clientId });
-router.get("/login", (req, res) => {
-    const authLink = xClient.generateOAuth2AuthLink(xConfig_1.xConfig.callbackUrl, {
-        scope: xConfig_1.xConfig.scopes,
-    });
-    global.codeVerifier = authLink.codeVerifier;
-    res.json({ url: authLink.url });
+const twitterClient = new twitter_api_v2_1.TwitterApi({
+    clientId: xConfig_1.xConfig.clientId,
+    clientSecret: xConfig_1.xConfig.clientSecret,
 });
-router.get("/callback", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { code } = req.query;
-    const codeVerifier = global.codeVerifier;
+router.use((0, express_session_1.default)({
+    secret: process.env.SESSION_SECRET || "fallback-secret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+}));
+router.get("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { accessToken } = yield xClient.loginWithOAuth2({
+        const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(xConfig_1.xConfig.callbackUrl, { scope: ["tweet.read", "users.read", "offline.access"] });
+        req.session.codeVerifier = codeVerifier !== null && codeVerifier !== void 0 ? codeVerifier : null;
+        req.session.oauthState = state !== null && state !== void 0 ? state : null;
+        res.json({ url });
+    }
+    catch (error) {
+        console.error("OAuth2 Login Error:", error);
+        res.status(500).json({ error: "Failed to generate auth link" });
+    }
+}));
+router.get("/callback", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { code, state } = req.query;
+    if (!code || !state) {
+        res.status(400).json({ error: "Missing authorization code or state" });
+        return;
+    }
+    try {
+        const storedCodeVerifier = req.session.codeVerifier;
+        const storedState = req.session.oauthState;
+        if (!storedCodeVerifier || storedState !== state) {
+            throw new Error("Invalid state or missing code verifier");
+        }
+        const { client: loggedClient, accessToken, refreshToken, } = yield twitterClient.loginWithOAuth2({
             code: code,
-            codeVerifier,
+            codeVerifier: storedCodeVerifier,
             redirectUri: xConfig_1.xConfig.callbackUrl,
         });
-        res.json({
-            accessToken,
-        });
+        req.session.codeVerifier = undefined;
+        req.session.oauthState = undefined;
+        res.json({ accessToken, refreshToken });
     }
-    catch (e) {
-        res.status(500).json({
-            error: "Login Failed",
-            details: e,
-        });
+    catch (error) {
+        console.error("OAuth2 Callback Failed:", error);
+        res.status(500).json({ error: "Login Failed" });
     }
 }));
 exports.default = router;

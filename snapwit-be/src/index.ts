@@ -1,21 +1,37 @@
 import express from "express";
+import dotenv from "dotenv";
+import session from "express-session";
+import fetchRoutes from "./routes/fetchRoutes";
+import authRoutes from "./routes/authRoute";
 import cors from "cors";
-import { xConfig } from "./config/xConfig";
-import authRoute from "./routes/authRoute";
-import commentRoute from "./routes/commentRoute";
+
+dotenv.config();
 
 const app = express();
+app.use(
+  cors({
+    origin: "http://127.0.0.1:5173",
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
+const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// Centralized Session Middleware (Used for authentication)
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "fallback-secret",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
+
 app.use(express.json());
-// app.use((req, res, next) => {
-//   res.setHeader("Content-Type", "application/json; charset=utf-8");
-//   next();
-// });
+app.options("*", cors());
+app.use("/", fetchRoutes);
+app.use("/auth", authRoutes);
 
-app.use("/auth", authRoute);
-app.use("/comments", commentRoute);
-
-app.listen(xConfig.port, () => {
-  console.log(`Server running on http://localhost:${xConfig.port}`);
+app.listen(PORT, () => {
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
