@@ -3,9 +3,11 @@ import puppeteer from "puppeteer-core";
 export async function twitterScraper(tweetUrl: string): Promise<string> {
   let browser;
   try {
+    const executablePath =
+      process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium";
+    console.log(`Attempting to launch Chromium from: ${executablePath}`);
     browser = await puppeteer.launch({
-      executablePath:
-        process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium",
+      executablePath,
       headless: "shell",
       args: [
         "--no-sandbox",

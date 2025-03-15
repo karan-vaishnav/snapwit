@@ -13,14 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.twitterScraper = twitterScraper;
-const puppeteer_1 = __importDefault(require("puppeteer"));
+const puppeteer_core_1 = __importDefault(require("puppeteer-core"));
 function twitterScraper(tweetUrl) {
     return __awaiter(this, void 0, void 0, function* () {
         let browser;
         try {
-            browser = yield puppeteer_1.default.launch({
-                // executablePath:
-                //   process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium-browser",
+            const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium";
+            console.log(`Attempting to launch Chromium from: ${executablePath}`);
+            browser = yield puppeteer_core_1.default.launch({
+                executablePath,
                 headless: "shell",
                 args: [
                     "--no-sandbox",
