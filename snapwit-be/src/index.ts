@@ -19,7 +19,6 @@ redisClient.on("error", (err) => console.error("Redis Client Error", err));
 redisClient.connect().catch(console.error);
 
 const { RedisStore } = connectRedis;
-// console.log(typeof RedisStore);
 
 app.use(
   cors({
