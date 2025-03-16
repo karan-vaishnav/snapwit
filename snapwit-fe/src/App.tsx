@@ -45,6 +45,23 @@ const App: React.FC = () => {
     );
   };
 
+  const getTweetIdFromUrl = (url: string) => {
+    const match = url.match(/status\/(\d+)/);
+    return match ? match[1] : null;
+  };
+
+  const shareComment = (tweetUrl: string, comment: string) => {
+    const tweetId = getTweetIdFromUrl(tweetUrl);
+    if (!tweetId) {
+      setError("Invalid Tweet URL. Please ensure it’s a valid tweet link.");
+      return;
+    }
+    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      comment
+    )}&in_reply_to=${tweetId}`;
+    window.open(shareUrl, "_blank");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
@@ -106,12 +123,20 @@ const App: React.FC = () => {
                   className="flex items-center justify-between p-2 bg-gray-50 rounded-md"
                 >
                   <span className="flex-1">{suggestion}</span>
-                  <button
-                    onClick={() => copyToClipboard(suggestion)}
-                    className="ml-2 px-2 py-1 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-md"
-                  >
-                    Copy
-                  </button>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => copyToClipboard(suggestion)}
+                      className="px-2 py-1 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-md"
+                    >
+                      Copy
+                    </button>
+                    <button
+                      onClick={() => shareComment(tweetUrl, suggestion)}
+                      className="px-2 py-1 text-sm text-white bg-green-500 hover:bg-green-600 rounded-md"
+                    >
+                      Share
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
