@@ -11,17 +11,33 @@ interface AICommentInput {
 }
 
 const commentCache: Record<string, string[]> = {};
+const creditCache: Record<string, number> = {};
 
 export async function generateAIComment({
   tweet,
   regen = false,
-}: AICommentInput): Promise<string[]> {
+}: AICommentInput): Promise<{ aiComments: string[]; creditsLeft: number }> {
   try {
     const cacheKey = tweet;
 
+    if (!(cacheKey in creditCache)) {
+      creditCache[cacheKey] = 3;
+    }
+
+    if (creditCache[cacheKey] <= 0) {
+      return {
+        aiComments: ["No credits left for this tweet!"],
+        creditsLeft: 0,
+      };
+    }
+
+    creditCache[cacheKey] -= 1;
+
     if (!regen && commentCache[cacheKey]) {
-      console.log("Returning cached AI comments...");
-      return commentCache[cacheKey];
+      return {
+        aiComments: commentCache[cacheKey],
+        creditsLeft: creditCache[cacheKey],
+      };
     }
 
     const prompt = `
@@ -42,7 +58,20 @@ export async function generateAIComment({
     - Adapt to **current trends, memes, and viral discussions**.
     - Feel natural, **not forced or generic**.
     - Avoid responses like "Tweet not found" or "What happened?"
-  
+    - **MUST BE UNIQUE**: ${
+      regen
+        ? "This is a regeneration request. Provide completely new and distinct comments that differ from any previous ones you might have generated for this tweet."
+        : "Provide fresh, original comments."
+    }
+    - To ensure uniqueness, incorporate a random creative twist (e.g., a fresh meme reference, a unique angle, or a spontaneous vibe) each time.
+
+    **Examples of random twists**:
+    - Reference a trending meme (e.g., "Is this allowed to be *this* good?").
+    - Add a playful spin (e.g., "Me running to tell my mom about this W").
+    - Use a unique tone (e.g., hype, sarcasm, or chill vibes).
+
+    **Random seed for uniqueness**: ${Date.now()} (use this to inspire variation)
+
     **Also, ensure:**
     - If the tweet is about a festival, acknowledge it in a fun way.
     - If the tweet has a motivational or productivity angle, engage with it accordingly.
@@ -62,21 +91,25 @@ export async function generateAIComment({
       .trim();
 
     let comments: string[] = [];
-
     try {
       comments = JSON.parse(responseText);
       if (!Array.isArray(comments) || comments.length !== 3) {
         throw new Error("Invalid AI response format");
       }
     } catch (error) {
-      console.error("AI response format error:", error);
-      return ["Couldn't generate valid comments."];
+      return {
+        aiComments: ["Couldn't generate valid comments."],
+        creditsLeft: creditCache[cacheKey],
+      };
     }
 
     commentCache[cacheKey] = comments;
-    return comments;
+
+    return { aiComments: comments, creditsLeft: creditCache[cacheKey] };
   } catch (error) {
-    console.error("Error generating AI comment:", error);
-    return ["Sorry, I couldn't generate a comment at this time."];
+    return {
+      aiComments: ["Sorry, I couldn't generate a comment at this time."],
+      creditsLeft: 0,
+    };
   }
 }

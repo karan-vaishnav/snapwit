@@ -32,16 +32,18 @@ function twitterScraper(tweetUrl) {
             const page = yield browser.newPage();
             yield page.goto(tweetUrl, { waitUntil: "networkidle2", timeout: 60000 });
             const tweetText = yield page
-                .$eval("article div[lang]", (el) => { var _a; return ((_a = el.textContent) === null || _a === void 0 ? void 0 : _a.trim()) || ""; })
-                .catch(() => "");
-            yield browser.close();
+                .$eval('article [data-testid="tweetText"]', (el) => { var _a; return ((_a = el.textContent) === null || _a === void 0 ? void 0 : _a.trim()) || ""; })
+                .catch(() => __awaiter(this, void 0, void 0, function* () {
+                return yield page
+                    .$eval("article div[lang]", (el) => { var _a; return ((_a = el.textContent) === null || _a === void 0 ? void 0 : _a.trim()) || ""; })
+                    .catch(() => "");
+            }));
             if (!tweetText) {
                 throw new Error("Tweet content not found.");
             }
             return tweetText;
         }
         catch (error) {
-            console.error("Error scraping tweet:", error);
             return "Error retrieving tweet content.";
         }
         finally {

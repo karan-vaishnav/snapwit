@@ -17,13 +17,19 @@ export async function twitterScraper(tweetUrl: string): Promise<string> {
     });
 
     const page = await browser.newPage();
+
     await page.goto(tweetUrl, { waitUntil: "networkidle2", timeout: 60000 });
 
     const tweetText = await page
-      .$eval("article div[lang]", (el) => el.textContent?.trim() || "")
-      .catch(() => "");
-
-    await browser.close();
+      .$eval(
+        'article [data-testid="tweetText"]',
+        (el) => el.textContent?.trim() || ""
+      )
+      .catch(async () => {
+        return await page
+          .$eval("article div[lang]", (el) => el.textContent?.trim() || "")
+          .catch(() => "");
+      });
 
     if (!tweetText) {
       throw new Error("Tweet content not found.");
@@ -31,7 +37,6 @@ export async function twitterScraper(tweetUrl: string): Promise<string> {
 
     return tweetText;
   } catch (error) {
-    console.error("Error scraping tweet:", error);
     return "Error retrieving tweet content.";
   } finally {
     if (browser) await browser.close();

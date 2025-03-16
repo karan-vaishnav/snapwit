@@ -6,11 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_session_1 = __importDefault(require("express-session"));
-// import Redis from "redis";
 const redis_1 = require("redis");
 const connect_redis_1 = __importDefault(require("connect-redis"));
 const fetchRoutes_1 = __importDefault(require("./routes/fetchRoutes"));
-const authRoute_1 = __importDefault(require("./routes/authRoute"));
 const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -19,10 +17,7 @@ const redisClient = (0, redis_1.createClient)({
 });
 redisClient.on("error", (err) => console.error("Redis Client Error", err));
 redisClient.connect().catch(console.error);
-// const RedisStore = connectRedis(session);
-// console.log(typeof RedisStore);
 const { RedisStore } = connect_redis_1.default;
-console.log(typeof RedisStore);
 app.use((0, cors_1.default)({
     origin: ["http://127.0.0.1:5173", "https://snapwit.vercel.app"],
     methods: ["GET", "POST", "OPTIONS"],
@@ -42,7 +37,7 @@ app.use((0, express_session_1.default)({
 app.use(express_1.default.json());
 app.options("*", (0, cors_1.default)());
 app.use("/", fetchRoutes_1.default);
-app.use("/auth", authRoute_1.default);
+// app.use("/auth", authRoutes);
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

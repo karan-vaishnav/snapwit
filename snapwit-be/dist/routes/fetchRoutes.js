@@ -18,17 +18,16 @@ const aiComment_1 = require("../services/aiComment");
 const router = express_1.default.Router();
 router.post("/comments/suggest", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { tweetUrl } = req.body;
+        const { tweetUrl, regen } = req.body;
         if (!tweetUrl) {
             res.status(400).json({ error: "Tweet URL is required" });
             return;
         }
         const tweet = yield (0, twitterScrapper_1.twitterScraper)(tweetUrl);
-        const aiComments = yield (0, aiComment_1.generateAIComment)({ tweet });
+        const aiComments = yield (0, aiComment_1.generateAIComment)({ tweet, regen });
         res.json({ aiComments });
     }
     catch (error) {
-        console.error("Error generating AI comment:", error);
         res.status(500).json({ error: "Failed to generate AI comment" });
     }
 }));

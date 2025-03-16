@@ -45,7 +45,7 @@ app.use(
 app.use(express.json());
 app.options("*", cors());
 app.use("/", fetchRoutes);
-app.use("/auth", authRoutes);
+// app.use("/auth", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

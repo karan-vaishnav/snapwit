@@ -67,7 +67,6 @@ router.get("/callback", async (req: Request, res: Response): Promise<void> => {
 
     res.json({ accessToken, refreshToken });
   } catch (error) {
-    console.error("OAuth2 Callback Failed:", error);
     res.status(500).json({ error: "Login Failed" });
   }
 });
