@@ -5,7 +5,6 @@ export async function twitterScraper(tweetUrl: string): Promise<string> {
   try {
     const executablePath =
       process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium";
-    console.log(`Attempting to launch Chromium from: ${executablePath}`);
     browser = await puppeteer.launch({
       executablePath,
       headless: "shell",

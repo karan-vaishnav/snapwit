@@ -19,7 +19,6 @@ function twitterScraper(tweetUrl) {
         let browser;
         try {
             const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium";
-            console.log(`Attempting to launch Chromium from: ${executablePath}`);
             browser = yield puppeteer_core_1.default.launch({
                 executablePath,
                 headless: "shell",
