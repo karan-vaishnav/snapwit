@@ -4,7 +4,7 @@ import session from "express-session";
 import { createClient, RedisClientType } from "redis";
 import connectRedis from "connect-redis";
 import fetchRoutes from "./routes/fetchRoutes";
-import authRoutes from "./routes/authRoute";
+// import authRoutes from "./routes/authRoute";
 import cors from "cors";
 
 dotenv.config();

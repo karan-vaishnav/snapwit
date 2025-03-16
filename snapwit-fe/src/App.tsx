@@ -21,15 +21,28 @@ const App: React.FC = () => {
         "https://snapwit-production.up.railway.app/comments/suggest",
         { tweetUrl, regen }
       );
-      const { aiComments, creditsLeft: remainingCredits } = response.data;
-      setSuggestions(aiComments || []);
-      setCreditsLeft(remainingCredits);
-      setIsRegenerate(true); 
+      const nestedData = response.data.aiComments;
+      const aiComments = nestedData.aiComments;
+      const remainingCredits = nestedData.creditsLeft;
+      setSuggestions(Array.isArray(aiComments) ? aiComments : []);
+      setCreditsLeft(remainingCredits !== undefined ? remainingCredits : null);
+      setIsRegenerate(true);
     } catch (err: any) {
       setError(err.response?.data?.error || "Something went wrong!");
     } finally {
       setLoading(false);
     }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+        alert("Copied to clipboard!");
+      },
+      () => {
+        setError("Failed to copy text.");
+      }
+    );
   };
 
   return (
@@ -48,9 +61,9 @@ const App: React.FC = () => {
             value={tweetUrl}
             onChange={(e) => {
               setTweetUrl(e.target.value);
-              setIsRegenerate(false); 
-              setCreditsLeft(null); 
-              setSuggestions([]); 
+              setIsRegenerate(false);
+              setCreditsLeft(null);
+              setSuggestions([]);
             }}
             placeholder="Enter Tweet URL"
             className="w-full p-2 border rounded-md focus:ring focus:ring-blue-300"
@@ -77,23 +90,39 @@ const App: React.FC = () => {
 
         {creditsLeft !== null && (
           <p className="mt-2 text-sm text-gray-600 text-center">
-            Credits Left: {creditsLeft}
+            Credits Left: {creditsLeft ?? "N/A"}
           </p>
         )}
 
         {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
 
-        {suggestions.length > 0 && (
+        {suggestions.length > 0 ? (
           <div className="mt-4">
             <h2 className="text-lg font-semibold">Suggestions:</h2>
             <ul className="mt-2 space-y-2">
               {suggestions.map((suggestion, index) => (
-                <li key={index} className="p-2 bg-gray-50 rounded-md">
-                  {suggestion}
+                <li
+                  key={index}
+                  className="flex items-center justify-between p-2 bg-gray-50 rounded-md"
+                >
+                  <span className="flex-1">{suggestion}</span>
+                  <button
+                    onClick={() => copyToClipboard(suggestion)}
+                    className="ml-2 px-2 py-1 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-md"
+                  >
+                    Copy
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
+        ) : (
+          suggestions.length === 0 &&
+          creditsLeft !== null && (
+            <p className="mt-4 text-gray-500 text-center">
+              No suggestions generated.
+            </p>
+          )
         )}
       </div>
     </div>
