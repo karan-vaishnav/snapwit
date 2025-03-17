@@ -70,7 +70,7 @@ const App: React.FC = () => {
       className={`min-h-screen flex flex-col ${
         darkMode
           ? "bg-radial-[at_50%_0%] from-blue-300 from-0% via-slate-900 via-15% to-gray-950 to-100% sm:via-30% md:via-40% lg:via-30% dark"
-          : "bg-radial-[at_50%_0%] from-blue-300 from-0% via-blue-200 via-15% to-sky-100 to-100% sm:via-30% md:via-40% lg:via-50%"
+          : "bg-radial-[at_50%_0%] from-blue-300 from-0% via-blue-300 via-15% to-sky-100 to-100% sm:via-30% md:via-40% lg:via-50%"
       }`}
     >
       {/* Navbar */}
@@ -136,9 +136,14 @@ const App: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center justify-center p-4 ">
-        <h2 className="text-lg italic mb-6 text-black dark:text-white">
-          AI-Powered Comments
+        <h2 className="text-4xl italic mb-6 text-black dark:text-white">
+        Stuck on what to say? 
         </h2>
+        <p className="text-xl mb-40 text-gray-800 dark:text-gray-400 text-center">
+        Drop a Twitter post URL into SnapWit and unlock AI-powered comments that slay!
+<br/>
+Only 3 credits per post to keep it fresh
+        </p>
         <div className="w-full max-w-md">
           <form
             onSubmit={(e) => {
@@ -150,7 +155,7 @@ const App: React.FC = () => {
             <div
               className="flex flex-col border rounded-md p-2 justify-center text-white
     border-transparent
-    [background:padding-box_linear-gradient(to_bottom,#1e293b,#1e293b),border-box_radial-gradient(circle_at_50%_100%,#ffffff_0%,rgba(255,255,255,0.3)_33.33%,rgba(255,255,255,0.14)_66.67%,rgba(255,255,255,0.1)_100%)]"
+    [background:padding-box_linear-gradient(to_bottom,#374b6b,#374b6b),border-box_radial-gradient(circle_at_50%_100%,#ffffff_0%,rgba(255,255,255,0.3)_33.33%,rgba(255,255,255,0.14)_66.67%,rgba(255,255,255,0.1)_100%)]"
             >
               <div className="relative flex gap-2">
                 <input
@@ -176,8 +181,8 @@ const App: React.FC = () => {
                 >
                   {loading ? (
                     <span className="relative flex size-3">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
-                      <span className="relative inline-flex size-3 rounded-full bg-sky-500"></span>
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple-400 opacity-75"></span>
+                      <span className="relative inline-flex size-3 rounded-full bg-purple-500"></span>
                     </span>
                   ) : isRegenerate ? (
                     <svg
@@ -186,7 +191,7 @@ const App: React.FC = () => {
                       viewBox="0 0 24 24"
                       stroke-width="1.5"
                       stroke="currentColor"
-                      className="size-6"
+                      className="size-6 text-purple-400"
                     >
                       <path
                         stroke-linecap="round"
@@ -201,7 +206,7 @@ const App: React.FC = () => {
                       viewBox="0 0 24 24"
                       stroke-width="1.5"
                       stroke="currentColor"
-                      className="size-6"
+                      className="size-6 text-purple-400"
                     >
                       <path
                         stroke-linecap="round"
@@ -214,7 +219,7 @@ const App: React.FC = () => {
               </div>
               <div>
                 {creditsLeft !== null && (
-                  <p className="text-sm text-gray-200 bg-sky-500 p-1 rounded w-25 dark:text-white mt-2">
+                  <p className="text-sm text-center text-gray-200 bg-purple-500 p-1 rounded w-25 dark:text-white mt-2">
                     Credits Left: {creditsLeft ?? "N/A"}
                   </p>
                 )}
@@ -233,7 +238,7 @@ const App: React.FC = () => {
                 {suggestions.map((suggestion, index) => (
                   <li
                     key={index}
-                    className="p-2 bg-sky-500 rounded-md flex justify-center items-center"
+                    className="p-2 bg-blue-400 rounded-md flex justify-center items-center"
                   >
                     <span className="block mb-2">{suggestion}</span>
                     <div className="flex">
@@ -248,18 +253,18 @@ const App: React.FC = () => {
                           viewBox="0 0 24 24"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
-                          color="#000000"
+                          color="#f6f6f6"
                         >
                           <path
                             d="M20 13V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V13"
-                            stroke="#000000"
+                            stroke="#f6f6f6"
                             stroke-width="1.5"
                             stroke-linecap="round"
                             stroke-linejoin="round"
                           ></path>
                           <path
                             d="M12 15V3M12 3L8.5 6.5M12 3L15.5 6.5"
-                            stroke="#000000"
+                            stroke="#f6f6f6"
                             stroke-width="1.5"
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -289,7 +294,7 @@ const App: React.FC = () => {
             href="https://x.com/krn_vaishnav"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-blue-500 dark:text-white"
+            className="text-base hover:text-blue-500 dark:text-white"
           >
             Twitter
           </a>
@@ -297,7 +302,7 @@ const App: React.FC = () => {
             href="https://github.com/karan-vaishnav"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-blue-500 dark:text-white"
+            className="text-base hover:text-blue-500 dark:text-white"
           >
             GitHub
           </a>
