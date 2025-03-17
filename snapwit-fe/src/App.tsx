@@ -35,16 +35,16 @@ const App: React.FC = () => {
     }
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(
-      () => {
-        alert("Copied to clipboard!");
-      },
-      () => {
-        setError("Failed to copy text.");
-      }
-    );
-  };
+  // const copyToClipboard = (text: string) => {
+  //   navigator.clipboard.writeText(text).then(
+  //     () => {
+  //       alert("Copied to clipboard!");
+  //     },
+  //     () => {
+  //       setError("Failed to copy text.");
+  //     }
+  //   );
+  // };
 
   const getTweetIdFromUrl = (url: string) => {
     const match = url.match(/status\/(\d+)/);
@@ -66,9 +66,15 @@ const App: React.FC = () => {
   const toggleTheme = () => setDarkMode(!darkMode);
 
   return (
-    <div className={`min-h-screen flex flex-col ${darkMode ? "dark" : ""}`}>
+    <div
+      className={`min-h-screen flex flex-col ${
+        darkMode
+          ? "bg-radial-[at_50%_0%] from-blue-300 from-0% via-slate-900 via-15% to-gray-950 to-100% sm:via-30% md:via-40% lg:via-30% dark"
+          : "bg-radial-[at_50%_0%] from-blue-300 from-0% via-blue-200 via-15% to-sky-100 to-100% sm:via-30% md:via-40% lg:via-50%"
+      }`}
+    >
       {/* Navbar */}
-      <nav className="flex items-center justify-between p-4 bg-white dark:bg-black">
+      <nav className="flex items-center justify-between p-4">
         <div className="flex items-center space-x-2">
           <span className="text-2xl font-bold">
             <svg
@@ -77,7 +83,7 @@ const App: React.FC = () => {
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              className="size-6 dark:text-white dark:fill-white"
+              className="size-6 xl:size-8 text-sky-500 fill-sky-500"
             >
               <path
                 stroke-linecap="round"
@@ -86,7 +92,7 @@ const App: React.FC = () => {
               />
             </svg>
           </span>
-          <h1 className="text-xl font-semibold text-black dark:text-white">
+          <h1 className="xl:text-2xl text-xl font-semibold text-black dark:text-white">
             SnapWit
           </h1>
         </div>
@@ -101,7 +107,7 @@ const App: React.FC = () => {
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              className="size-6 text-white"
+              className="size-6 xl:size-8 text-white"
             >
               <path
                 stroke-linecap="round"
@@ -116,7 +122,7 @@ const App: React.FC = () => {
               viewBox="0 0 24 24"
               stroke-width="1.5"
               stroke="currentColor"
-              className="size-6"
+              className="size-6 xl:size-8"
             >
               <path
                 stroke-linecap="round"
@@ -129,7 +135,7 @@ const App: React.FC = () => {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-grow flex flex-col items-center justify-center p-4 dark:bg-black">
+      <main className="flex-grow flex flex-col items-center justify-center p-4 ">
         <h2 className="text-lg italic mb-6 text-black dark:text-white">
           AI-Powered Comments
         </h2>
@@ -141,7 +147,11 @@ const App: React.FC = () => {
             }}
             className="space-y-2"
           >
-            <div className=" flex flex-col border rounded-md focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white p-2 justify-center">
+            <div
+              className="flex flex-col border rounded-md p-2 justify-center text-white
+    border-transparent
+    [background:padding-box_linear-gradient(to_bottom,#1e293b,#1e293b),border-box_radial-gradient(circle_at_50%_100%,#ffffff_0%,rgba(255,255,255,0.3)_33.33%,rgba(255,255,255,0.14)_66.67%,rgba(255,255,255,0.1)_100%)]"
+            >
               <div className="relative flex gap-2">
                 <input
                   type="text"
@@ -153,7 +163,7 @@ const App: React.FC = () => {
                     setSuggestions([]);
                   }}
                   placeholder="Enter Tweet URL"
-                  className="w-full h-10 pr-10 mb-2"
+                  className="w-full h-10 pr-10 focus:ring-0 focus:outline-none"
                 />
                 <button
                   type="submit"
@@ -165,7 +175,10 @@ const App: React.FC = () => {
                   }`}
                 >
                   {loading ? (
-                    <span className="w-1 h-6 border-2 border-t-transparent border-white rounded-full animate-spin hover:cursor-pointer" />
+                    <span className="relative flex size-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                      <span className="relative inline-flex size-3 rounded-full bg-sky-500"></span>
+                    </span>
                   ) : isRegenerate ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -201,7 +214,7 @@ const App: React.FC = () => {
               </div>
               <div>
                 {creditsLeft !== null && (
-                  <p className="text-sm text-gray-600 dark:text-white">
+                  <p className="text-sm text-gray-200 bg-sky-500 p-1 rounded w-25 dark:text-white mt-2">
                     Credits Left: {creditsLeft ?? "N/A"}
                   </p>
                 )}
@@ -220,42 +233,37 @@ const App: React.FC = () => {
                 {suggestions.map((suggestion, index) => (
                   <li
                     key={index}
-                    className="p-2 bg-gray-50 dark:bg-gray-800 dark:text-white rounded-md"
+                    className="p-2 bg-sky-500 rounded-md flex justify-center items-center"
                   >
                     <span className="block mb-2">{suggestion}</span>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => copyToClipboard(suggestion)}
-                        className="px-2 py-1 text-sm text-white border rounded-md flex items-center hover:cursor-pointer"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          className="size-6 text-black dark:text-white"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
-                          />
-                        </svg>
-                      </button>
+                    <div className="flex">
                       <button
                         onClick={() => shareComment(tweetUrl, suggestion)}
-                        className="px-2 py-1 text-sm border text-white dark:fill-white rounded-md flex items-center hover:cursor-pointer"
+                        className="text-sm text-white fill-black flex items-center hover:cursor-pointer"
                       >
                         <svg
+                          width="24px"
+                          height="24px"
+                          stroke-width="1.5"
+                          viewBox="0 0 24 24"
+                          fill="none"
                           xmlns="http://www.w3.org/2000/svg"
-                          x="0px"
-                          y="0px"
-                          width="25"
-                          height="25"
-                          viewBox="0 0 50 50"
+                          color="#000000"
                         >
-                          <path d="M 6.9199219 6 L 21.136719 26.726562 L 6.2285156 44 L 9.40625 44 L 22.544922 28.777344 L 32.986328 44 L 43 44 L 28.123047 22.3125 L 42.203125 6 L 39.027344 6 L 26.716797 20.261719 L 16.933594 6 L 6.9199219 6 z"></path>
+                          <path
+                            d="M20 13V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V13"
+                            stroke="#000000"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></path>
+                          <path
+                            d="M12 15V3M12 3L8.5 6.5M12 3L15.5 6.5"
+                            stroke="#000000"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          ></path>
                         </svg>
                       </button>
                     </div>
@@ -275,18 +283,18 @@ const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="p-4 bg-white dark:bg-black text-center text-sm">
+      <footer className="p-4 text-center text-sm">
         <div className="flex justify-center space-x-4 mb-2">
           <a
-            href="https://twitter.com"
+            href="https://x.com/krn_vaishnav"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-blue-500 dark:text-white"
           >
-            𝕏 Twitter
+            Twitter
           </a>
           <a
-            href="https://github.com"
+            href="https://github.com/karan-vaishnav"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-blue-500 dark:text-white"
