@@ -64,7 +64,8 @@ SnapWit is split into two main components:
 - **Node.js**: v16+ (for both FE and BE).
 - **Google API Key**: For Google Generative AI (set in `.env`).
 - **Redis**: For session storage (optional locally, required in production).
-- **Chromium**: For Puppeteer (set path in `.env` if not using default).
+- **Chromium**: For Puppeteer (set path in `.env` if not using default)
+- 
 
 ### Backend Setup (`snapwit-be`)
 1. **Clone the Repository**:
