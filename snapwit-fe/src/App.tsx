@@ -292,7 +292,7 @@ const App: React.FC = () => {
       <footer className="p-4 text-center text-sm">
         <div className="flex justify-center space-x-4 mb-2">
           <a
-            href="https://x.com/krn_vaishnav"
+            href="https://x.com/who_krn"
             target="_blank"
             rel="noopener noreferrer"
             className="text-base hover:text-blue-500 dark:text-white"
