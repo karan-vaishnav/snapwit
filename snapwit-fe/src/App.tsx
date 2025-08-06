@@ -137,12 +137,13 @@ const App: React.FC = () => {
       {/* Main Content */}
       <main className="flex-grow flex flex-col items-center justify-center p-4 ">
         <h2 className="text-4xl italic mb-6 text-black dark:text-white">
-        Stuck on what to say? 
+          Stuck on what to say?
         </h2>
         <p className="text-xl mb-40 text-gray-800 dark:text-gray-400 text-center">
-        Drop a Twitter post URL into SnapWit and unlock AI-powered comments that slay!
-<br/>
-Only 3 credits per post to keep it fresh
+          Drop a Twitter post URL into SnapWit and unlock AI-powered comments
+          that slay!
+          <br />
+          Only 3 credits per post to keep it fresh
         </p>
         <div className="w-full max-w-md">
           <form
@@ -307,7 +308,17 @@ Only 3 credits per post to keep it fresh
             GitHub
           </a>
         </div>
-        <p className="text-gray-600 dark:text-gray-400">Developed by Karan</p>
+        <p className="text-gray-600 dark:text-gray-400">
+          Developed by{" "}
+          <a
+            href="https://karan-vaishnav.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-blue-500 underline"
+          >
+            Karan
+          </a>
+        </p>
       </footer>
     </div>
   );
